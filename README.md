@@ -138,5 +138,3 @@ And... that's it! This is just the start, there's so much more you can do. Go ou
 Like I said, this guide doesn't cover every instruction, but the in-game tooltips should be enough to let you make most common logic scripts, such as unit item hauling.
 
 If you want a more normal programming experience and don't want to be writing basically assembly, there are multiple programming languages that compile to mlog, people have made C compilers, python compilers, and [mindcode](https://github.com/cardillan/mindcode) which was made with targeting mlog in mind.
-
-git test test
