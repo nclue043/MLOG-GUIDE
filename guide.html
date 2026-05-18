@@ -101,7 +101,7 @@
 8 Sensor: {dead} = (@dead) in (@unit)         │
 9 Jump -&gt; 7: (dead) [not] (true) ─────────────┘
 </code></pre>
-<p>Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is <code>i/ips</code> where <code>i</code> is the number of instructions and <code>ips</code> is the instructions per second of your processor. This burst is maxed out at <code>5*ipt</code> instructions, where ipt is <code>ips/60</code>.</p>
+<p>Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is <code>i/ips</code> where <code>i</code> is the number of instructions and <code>ips</code> is the instructions per second of your processor. This burst is maxed out at <code>5*ipt</code> insructions, where ipt is <code>ips/60</code>.</p>
 <h2>Other</h2>
 <p>And... that's it! This is just the start, there's so much more you can do. Go out there and use your hopefully newfound knowledge! Reading through a guide can only get you so far after all.</p>
 <p>Like I said, this guide doesn't cover every instruction, but the in-game tooltips should be enough to let you make most common logic scripts, such as unit item hauling.</p>
@@ -126,7 +126,7 @@
 }
 
 .markdown-body pre {
-  background-color: #d5d5f5;
+  background-color: #7f94b3;
   border-radius: 8px;
   padding: 8px;
   overflow-x: auto;
@@ -134,7 +134,7 @@
 }
 
 .markdown-body :not(pre) > code {
-  background-color: #d5d5f5;
+  background-color: #7f94b3;
   border-radius: 8px;
   padding-left: 3px;
   padding-right: 3px;
@@ -153,11 +153,11 @@
 }
 
 .markdown-body th {
-  background-color: #d5d5f5;
+  background-color: #7f94b3;
 }
 
 .markdown-body tr:nth-child(even) {
-  background-color: #f5f5f5;
+  background-color: #f2f2f2;
 }
 
 .markdown-body a {
