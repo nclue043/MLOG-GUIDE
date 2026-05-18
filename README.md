@@ -121,10 +121,10 @@ Remember, units are bound in a cycle, and execution loops after reaching the end
 ```
 0 Operation: {temp} = (@thisy) [*] (@mapw)
 1 Operation: {thisf} = (@thisx) [+] (temp)
-2 Wait: (0.05) seconds
-3 Unit Bind: type (@flare) <──────────────────┐
+2 Wait: (0.05) seconds <──────────────────────┐
+3 Unit Bind: type (@flare)                    │
 4 Sensor: {unitf} = (@flag) in (@unit)        │
-5 Jump -> 3: (unitf) [not] (0) ───────────────┘
+5 Jump -> 2: (unitf) [not] (0) ───────────────┘
 6 Unit Control: [flag] value (thisf)
 7 Unit Control: [move] x (@thisx) y (@thisy) <┐
 8 Sensor: {dead} = (@dead) in (@unit)         │
