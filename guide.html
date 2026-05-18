@@ -1,0 +1,180 @@
+<div class="markdown-body">
+<h1>MLog Guide</h1>
+<h2>Table of contents</h2>
+<ol>
+<li><a href="#table-of-contents">Table of contents (you're here!)</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#mlog">MLog</a>
+<ul>
+<li><a href="#execution">Execution</a></li>
+<li><a href="#variables">Variables</a></li>
+<li><a href="#conditionals">Conditionals</a></li>
+<li><a href="#linking-buildings">Linking buildings</a>
+<ul>
+<li><a href="#sensor">Sensor</a></li>
+<li><a href="#control">Control</a></li>
+</ul>
+</li>
+<li><a href="#binding-units">Binding units</a>
+<ul>
+<li><a href="#flagging-units">Flagging units</a></li>
+</ul>
+</li>
+<li><a href="#solutions">Solutions</a></li>
+</ul>
+</li>
+<li><a href="#other">Other</a></li>
+</ol>
+<h2>Introduction</h2>
+<p>If you're reading this guide, you probably already know what Mindustry logic is, but just in case you don't, Mindustry logic (often just mlog for brevity) is the language which the various processor buildings in Mindustry use. If you've never programmed before, don't worry. This guide assumes no prior programming experience.</p>
+<p>Throughout the guide I'll be showing mlog code snippets. These aren't valid (you can't load them into the game) for readability. I decided on this as the actual text representation is cluttered with parameters that the command doesn't even use in that configuration (e.g. <code>@copper</code> in <code>Unit locate</code> despite being in <code>building</code> and not <code>ore</code> mode). Instead, the code snippets will be written as they appear in-game (as of build 157.4). Values will be represented with <code>()</code>, dropdowns with <code>[]</code>, and variable names with <code>{}</code>.</p>
+<p>As you read through, I encourage you to follow along if you can. Practice makes perfect, as cliche as the saying is. Just make sure to actually experiment with and understand the concepts discussed, you aren't going to learn anything by blindly copying things. I won't be covering every instruction, so you should go look through them yourself after this guide.</p>
+<h2>MLog</h2>
+<h3>Execution</h3>
+<p>MLog is typically run from top to bottom (see <a href="#conditionals">Conditionals</a>) at some amount of instructions per second and loops back to the top when it reaches the bottom, continuing to loop indefinitely. You can also prematurely loop back to the top using <code>End</code>. Though seldom used, there's also <code>Stop</code> which permanently halts execution of the processor.</p>
+<h3>Variables</h3>
+<p>Variables are one of the most important things in programming, and it's where we'll begin. A variable is just something that holds a value, say a number or a piece of text. Variables in mlog are quite simple. You can set them with <code>Set: {A} = (B)</code>, where A is the variable's name and B is the value it will be set to, and other instructions that have an output. You can do simple math with them using <code>Operation: {result} = (a) [+] (b)</code> and you can use them in place of any normal value.</p>
+<pre><code>0 Set: {a} = (5)
+1 Set: {b} = (3)
+2 Operation: {result_add} = (a) [+] (b)
+3 Operation: {result_sub} = (a) [-] (b)
+</code></pre>
+<p>Variables can hold one of many different data types. Here they are for reference, though you aren't expected to remember all of them:</p>
+<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead><tbody><tr><td>number</td><td>a simple number</td><td><code>12.34</code></td></tr><tr><td>string</td><td>text that's "wrapped in double quotes"</td><td><code>"Hello, world!"</code></td></tr><tr><td>bool</td><td>true or false</td><td><code>true</code></td></tr><tr><td>null</td><td>nothing. returned by functions on failure</td><td><code>null</code></td></tr><tr><td>building</td><td>an object reference to a building</td><td><code>shard1</code></td></tr><tr><td>unit</td><td>an object reference to a unit</td><td><code>@unit</code></td></tr><tr><td>content</td><td>represents a type of something</td><td><code>@copper</code></td></tr></tbody></table></div>
+<p>MLog also provides many built-in variables, which start with the symbol @, like the aforementioned <code>@unit</code>, and they can be found in the built-in variables tab in a processor. Most are read-only, and can represent many things such as: an aforementioned Content type, like <code>@copper</code>, a mathematical constant like <code>@pi</code>, properties of the processor itself, like <code>@thisx</code> and more.</p>
+<h3>Conditionals</h3>
+<p>Of course, simple math isn't all you can do. Think of any task you do in real life, and inevitably there will be a choice you make, or a thing you need to repeat, not a linear path. MLog lets you do this with essentially its sole control flow operation, <code>Jump</code>. It has many modes, but defaults to <code>Jump: (result) [not] (false)</code>, where not means "not equal to". If the whole condition evaluates to true, it jumps to the specified part of code (here I represent it as <code>Jump -&gt; address:</code>), and if it's false then it just continues on normally. This is the only control flow you'll get, no if statements, no loops. Jumps are very common, so the built-in editor automatically shifts line numbers when new lines are inserted.</p>
+<pre><code>0 Set: {number} = (15)
+1 Jump -&gt; 5: (number) [&gt;=] (10) ──────┐
+2 Print: ("number is less than 10!")  │
+3 Print Flush: to (message1)          │
+4 Stop                                │
+5 Print: ("number is 10 or above!") &lt;─┘
+6 Print Flush: to (message1)
+7 Stop
+</code></pre>
+<h3>Linking buildings</h3>
+<p>Before, we were basically only moving and manipulating numbers. Now it's time to enter the actual Mindustry world. You can link buildings to a processor by selecting a processor, then pressing another building. Above that building you can see its automatically assigned name, which is accessible in the processor as a read-only variable.</p>
+<h3>Sensor</h3>
+<p>It's no use just having that variable though, first you must use one of the instructions that takes a building as input. One of the most important of these is <code>Sensor</code>, which lets you sense properties of buildings (or units! see <a href="#binding-units">Binding units</a>). There's a comprehensive dropdown list of all the built-in properties you can sense, though in v8 you can also sense another processor's variables directly.</p>
+<pre><code>0 Sensor: {x} = (@x) in (container1)
+1 Sensor: {y} = (@y) in (container1)
+2 Sensor: {items} = (@copper) in (container1)
+</code></pre>
+<h3>Control</h3>
+<p>Finally, we will get to start actually affecting the world. <code>Control</code> lets you, well, control a building. The most important things you can do with it are enabling/disabling buildings (<code>Control: set [enabled] of (building) to (0)</code>) and making buildings, specifically turrets, target a position or unit. By now, you've learned enough to make useful scripts! Try writing a script that disables a thorium reactor when it doesn't have cryofluid, a common and practical piece of logic many have saved in their schematic lists. The solution will be <a href="#solutions">here</a>.</p>
+<h3>Binding Units</h3>
+<p>While controlling buildings is a good start, most logic uses units as well. Binding units often confuses beginners, but it's pretty simple. Calling <code>Unit Bind: type (utype)</code> binds the next unit of the given type, in order of unit creation (oldest to youngest), and stores it in <code>@unit</code>.</p>
+<p>This means it can still be ordered by players, as it hasn't been controlled yet. The unit is only controlled when you call, well, <code>Unit Control</code>. Units continue following their last given order (even after binding a new unit), but eventually stop unless given more. If you call <code>Unit Control: [unbind]</code>, then that will cancel orders. To bind another unit without cancelling, simply call <code>Unit Bind</code> again.</p>
+<p>Try creating a script that makes every flare move 5 tiles the processor's left (<code>@thisx</code> and <code>@thisy</code>). <a href="#solutions">Solutions</a>.</p>
+<h3>Flagging units</h3>
+<p>Sometimes you want to bind every unit of a given type, but often you just want to bind a few, if not only one. MLog provides a simple system for "claiming" units and stopping other processors from using them. Units can store a single number, called its flag, defaulting to 0. When binding a unit, you check its flag first and bind again if the flag isn't 0. After finding a free unit, you can then flag it with <code>Unit Control: [flag] value (thisf)</code> where <code>thisf</code> is a unique number. Common practice is to tie it to the processor's position, as such:</p>
+<pre><code>0 Operation: {temp} = (@thisy) [*] (@mapw)
+1 Operation: {thisf} = (@thisx) [+] (temp)
+</code></pre>
+<p>Now try safely binding a free flare, flag it, then move it to the processor's position directly until it dies. <a href="#solutions">Solutions</a>.</p>
+<h3>Solutions</h3>
+<p>There can be many different ways of writing the same code, so don't be discouraged if your solution is different from those provided here.</p>
+<h4>Reactor safety:</h4>
+<pre><code>0 Sensor: {cryo} = (@cryofluid) in (reactor1)
+1 Jump -&gt; 4: (cryo) [==] (0) ──────────────────┐
+2 Control: set [enabled] of (reactor1) to (1)  │
+3 End                                          │
+4 Control: set [enabled] of (reactor1) to (0) &lt;┘
+</code></pre>
+<p>Take note of that <code>End</code> there. Remember, top to bottom execution. After a jump, that's still true!</p>
+<h4>Flare control:</h4>
+<pre><code>0 Unit Bind: type (@flare)
+1 Operation: {leftx} = (@thisx) [-] (5)
+2 Unit Control: [move] x (leftx) y (@thisy)
+</code></pre>
+<p>Remember, units are bound in a cycle, and execution loops after reaching the end!</p>
+<h4>Flagging:</h4>
+<pre><code>0 Operation: {temp} = (@thisy) [*] (@mapw)
+1 Operation: {thisf} = (@thisx) [+] (temp)
+2 Wait: (0.05) seconds &lt;──────────────────────┐
+3 Unit Bind: type (@flare)                    │
+4 Sensor: {unitf} = (@flag) in (@unit)        │
+5 Jump -&gt; 2: (unitf) [not] (0) ───────────────┘
+6 Unit Control: [flag] value (thisf)
+7 Unit Control: [move] x (@thisx) y (@thisy) &lt;┐
+8 Sensor: {dead} = (@dead) in (@unit)         │
+9 Jump -&gt; 7: (dead) [not] (true) ─────────────┘
+</code></pre>
+<p>Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is <code>i/ips</code> where <code>i</code> is the number of instructions and <code>ips</code> is the instructions per second of your processor. This burst is maxed out at <code>5*ipt</code> insructions, where ipt is <code>ips/60</code>.</p>
+<h2>Other</h2>
+<p>And... that's it! This is just the start, there's so much more you can do. Go out there and use your hopefully newfound knowledge! Reading through a guide can only get you so far after all.</p>
+<p>Like I said, this guide doesn't cover every instruction, but the in-game tooltips should be enough to let you make most common logic scripts, such as unit item hauling.</p>
+<p>If you want a more normal programming experience and don't want to be writing basically assembly, there are multiple programming languages that compile to mlog, people have made C compilers, python compilers, and <a href="https://github.com/cardillan/mindcode">mindcode</a> which was made with targeting mlog in mind.</p>
+</div>
+<style>
+:root {
+  --fg-col: #335;
+  --fg-sec-col: #55f;
+  --bg-sec-col: #f2f2f2;
+  --bg-accent: #dedeee;
+}
+
+.markdown-body {
+  border-left: 1px solid var(--fg-col);
+  border-right: 1px solid var(--fg-col);
+  color: var(--fg-col);
+  width: 75ch;
+  margin-inline: auto;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  padding-inline: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  font-family: sans-serif;
+}
+
+.markdown-body p {
+  text-align: justify;
+}
+
+.markdown-body pre {
+  background-color: var(--bg-accent);
+  border-radius: 8px;
+  padding: 8px;
+  overflow-x: auto;
+  font-size: 14;
+}
+
+.markdown-body :not(pre) > code {
+  background-color: var(--bg-accent);
+  border-radius: 8px;
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 14;
+  white-space: nowrap;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-body th, .markdown-body td {
+  padding: 8px;
+  border: 1px solid var(--fg-col);
+}
+
+.markdown-body th {
+  background-color: var(--bg-accent);
+}
+
+.markdown-body tr:nth-child(even) {
+  background-color: var(--bg-sec-col);
+}
+
+.markdown-body a {
+  text-decoration: none;
+  color: var(--fg-sec-col);
+}
+
+.markdown-body a:visited {
+  text-decoration: none;
+  color: var(--fg-sec-col);
+}
+</style>
