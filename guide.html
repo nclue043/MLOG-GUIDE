@@ -108,9 +108,17 @@
 <p>If you want a more normal programming experience and don't want to be writing basically assembly, there are multiple programming languages that compile to mlog, people have made C compilers, python compilers, and <a href="https://github.com/cardillan/mindcode">mindcode</a> which was made with targeting mlog in mind.</p>
 </div>
 <style>
+:root {
+  --fg-col: #335;
+  --fg-sec-col: #55f;
+  --bg-sec-col: #f2f2f2;
+  --bg-accent: #dedeee;
+}
+
 .markdown-body {
-  border-left: 1px solid gray;
-  border-right: 1px solid gray;
+  border-left: 1px solid var(--fg-col);
+  border-right: 1px solid var(--fg-col);
+  color: var(--fg-col);
   width: 75ch;
   margin-inline: auto;
   margin-top: -10px;
@@ -126,7 +134,7 @@
 }
 
 .markdown-body pre {
-  background-color: #9fbccf;
+  background-color: var(--bg-accent);
   border-radius: 8px;
   padding: 8px;
   overflow-x: auto;
@@ -134,7 +142,7 @@
 }
 
 .markdown-body :not(pre) > code {
-  background-color: #9fbccf;
+  background-color: var(--bg-accent);
   border-radius: 8px;
   padding-left: 3px;
   padding-right: 3px;
@@ -149,24 +157,24 @@
 
 .markdown-body th, .markdown-body td {
   padding: 8px;
-  border: 1px solid gray;
+  border: 1px solid var(--fg-col);
 }
 
 .markdown-body th {
-  background-color: #9fbccf;
+  background-color: var(--bg-accent);
 }
 
 .markdown-body tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: var(--bg-sec-col);
 }
 
 .markdown-body a {
   text-decoration: none;
-  color: #55f;
+  color: var(--fg-sec-col);
 }
 
 .markdown-body a:visited {
   text-decoration: none;
-  color: #55f;
+  color: var(--fg-sec-col);
 }
 </style>
