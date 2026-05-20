@@ -55,11 +55,11 @@ Of course, simple math isn't all you can do. Think of any task you do in real li
 
 ```
 0 Set: {number} = (15)
-1 Jump -> 5: (number) [>=] (10) ──────┐
-2 Print: ("number is less than 10!")  │
-3 Print Flush: to (message1)          │
-4 Stop                                │
-5 Print: ("number is 10 or above!") <─┘
+1 Jump -> 5: (number) [>=] (10) ───────┐
+2 Print: ("number is less than 10!")   │
+3 Print Flush: to (message1)           │
+4 Stop                                 │
+5 Print: ("number is 10 or above!") <-─┘
 6 Print Flush: to (message1)
 7 Stop
 ```
@@ -102,10 +102,10 @@ There can be many different ways of writing the same code, so don't be discourag
 #### Reactor safety:
 ```
 0 Sensor: {cryo} = (@cryofluid) in (reactor1)
-1 Jump -> 4: (cryo) [==] (0) ──────────────────┐
-2 Control: set [enabled] of (reactor1) to (1)  │
-3 End                                          │
-4 Control: set [enabled] of (reactor1) to (0) <┘
+1 Jump -> 4: (cryo) [==] (0) ───────────────────┐
+2 Control: set [enabled] of (reactor1) to (1)   │
+3 End                                           │
+4 Control: set [enabled] of (reactor1) to (0) <-┘
 ```
 Take note of that `End` there. Remember, top to bottom execution. After a jump, that's still true!
 
@@ -121,14 +121,14 @@ Remember, units are bound in a cycle, and execution loops after reaching the end
 ```
 0 Operation: {temp} = (@thisy) [*] (@mapw)
 1 Operation: {thisf} = (@thisx) [+] (temp)
-2 Wait: (0.05) seconds <──────────────────────┐
-3 Unit Bind: type (@flare)                    │
-4 Sensor: {unitf} = (@flag) in (@unit)        │
-5 Jump -> 2: (unitf) [not] (0) ───────────────┘
+2 Wait: (0.05) seconds <-──────────────────────┐
+3 Unit Bind: type (@flare)                     │
+4 Sensor: {unitf} = (@flag) in (@unit)         │
+5 Jump -> 2: (unitf) [not] (0) ────────────────┘
 6 Unit Control: [flag] value (thisf)
-7 Unit Control: [move] x (@thisx) y (@thisy) <┐
-8 Sensor: {dead} = (@dead) in (@unit)         │
-9 Jump -> 7: (dead) [not] (true) ─────────────┘
+7 Unit Control: [move] x (@thisx) y (@thisy) <-┐
+8 Sensor: {dead} = (@dead) in (@unit)          │
+9 Jump -> 7: (dead) [not] (true) ──────────────┘
 ```
 Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is `i/ips` where `i` is the number of instructions and `ips` is the instructions per second of your processor. This burst is maxed out at `5*ipt` insructions, where ipt is `ips/60`.
 

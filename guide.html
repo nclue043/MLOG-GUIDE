@@ -45,11 +45,11 @@
 <h3>Conditionals</h3>
 <p>Of course, simple math isn't all you can do. Think of any task you do in real life, and inevitably there will be a choice you make, or a thing you need to repeat, not a linear path. MLog lets you do this with essentially its sole control flow operation, <code>Jump</code>. It has many modes, but defaults to <code>Jump: (result) [not] (false)</code>, where not means "not equal to". If the whole condition evaluates to true, it jumps to the specified part of code (here I represent it as <code>Jump -&gt; address:</code>), and if it's false then it just continues on normally. This is the only control flow you'll get, no if statements, no loops. Jumps are very common, so the built-in editor automatically shifts line numbers when new lines are inserted.</p>
 <pre><code>0 Set: {number} = (15)
-1 Jump -&gt; 5: (number) [&gt;=] (10) ──────┐
-2 Print: ("number is less than 10!")  │
-3 Print Flush: to (message1)          │
-4 Stop                                │
-5 Print: ("number is 10 or above!") &lt;─┘
+1 Jump -&gt; 5: (number) [&gt;=] (10) ───────┐
+2 Print: ("number is less than 10!")   │
+3 Print Flush: to (message1)           │
+4 Stop                                 │
+5 Print: ("number is 10 or above!") &lt;-─┘
 6 Print Flush: to (message1)
 7 Stop
 </code></pre>
@@ -77,10 +77,10 @@
 <p>There can be many different ways of writing the same code, so don't be discouraged if your solution is different from those provided here.</p>
 <h4>Reactor safety:</h4>
 <pre><code>0 Sensor: {cryo} = (@cryofluid) in (reactor1)
-1 Jump -&gt; 4: (cryo) [==] (0) ──────────────────┐
-2 Control: set [enabled] of (reactor1) to (1)  │
-3 End                                          │
-4 Control: set [enabled] of (reactor1) to (0) &lt;┘
+1 Jump -&gt; 4: (cryo) [==] (0) ───────────────────┐
+2 Control: set [enabled] of (reactor1) to (1)   │
+3 End                                           │
+4 Control: set [enabled] of (reactor1) to (0) &lt;-┘
 </code></pre>
 <p>Take note of that <code>End</code> there. Remember, top to bottom execution. After a jump, that's still true!</p>
 <h4>Flare control:</h4>
@@ -92,14 +92,14 @@
 <h4>Flagging:</h4>
 <pre><code>0 Operation: {temp} = (@thisy) [*] (@mapw)
 1 Operation: {thisf} = (@thisx) [+] (temp)
-2 Wait: (0.05) seconds &lt;──────────────────────┐
-3 Unit Bind: type (@flare)                    │
-4 Sensor: {unitf} = (@flag) in (@unit)        │
-5 Jump -&gt; 2: (unitf) [not] (0) ───────────────┘
+2 Wait: (0.05) seconds &lt;-──────────────────────┐
+3 Unit Bind: type (@flare)                     │
+4 Sensor: {unitf} = (@flag) in (@unit)         │
+5 Jump -&gt; 2: (unitf) [not] (0) ────────────────┘
 6 Unit Control: [flag] value (thisf)
-7 Unit Control: [move] x (@thisx) y (@thisy) &lt;┐
-8 Sensor: {dead} = (@dead) in (@unit)         │
-9 Jump -&gt; 7: (dead) [not] (true) ─────────────┘
+7 Unit Control: [move] x (@thisx) y (@thisy) &lt;-┐
+8 Sensor: {dead} = (@dead) in (@unit)          │
+9 Jump -&gt; 7: (dead) [not] (true) ──────────────┘
 </code></pre>
 <p>Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is <code>i/ips</code> where <code>i</code> is the number of instructions and <code>ips</code> is the instructions per second of your processor. This burst is maxed out at <code>5*ipt</code> insructions, where ipt is <code>ips/60</code>.</p>
 <h2>Other</h2>
@@ -107,6 +107,7 @@
 <p>Like I said, this guide doesn't cover every instruction, but the in-game tooltips should be enough to let you make most common logic scripts, such as unit item hauling.</p>
 <p>If you want a more normal programming experience and don't want to be writing basically assembly, there are multiple programming languages that compile to mlog, people have made C compilers, python compilers, and <a href="https://github.com/cardillan/mindcode">mindcode</a> which was made with targeting mlog in mind.</p>
 </div>
+<link href="https://fonts.googleapis.com/css2?family=Cascadia Code" rel="stylesheet">
 <style>
 :root {
   --fg-col: #335;
@@ -139,8 +140,10 @@
   white-space: nowrap;
 
   background-color: var(--bg-accent);
-  font-size: 14;
   border-radius: 8px;
+
+  font-family: 'Cascadia Code', 'Courier New', Courier, monospace;
+  font-size: 14;
 }
 
 .markdown-body pre {
@@ -148,8 +151,12 @@
   overflow-x: auto;
 
   background-color: var(--bg-accent);
-  font-size: 14;
   border-radius: 8px;
+}
+
+.markdown-body pre > code {
+  font-family: 'Cascadia Code', 'Courier New', Courier, monospace;
+  font-size: 14;
 }
 
 .markdown-body table {
