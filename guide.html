@@ -133,21 +133,25 @@
   text-align: justify;
 }
 
-.markdown-body pre {
-  background-color: var(--bg-accent);
-  border-radius: 8px;
-  padding: 8px;
-  overflow-x: auto;
-  font-size: 14;
-}
-
 .markdown-body :not(pre) > code {
-  background-color: var(--bg-accent);
-  border-radius: 8px;
   padding-left: 3px;
   padding-right: 3px;
-  font-size: 14;
   white-space: nowrap;
+
+  background-color: var(--bg-accent);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 14;
+  border-radius: 8px;
+}
+
+.markdown-body pre {
+  padding: 8px;
+  overflow-x: auto;
+
+  background-color: var(--bg-accent);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 14;
+  border-radius: 8px;
 }
 
 .markdown-body table {
