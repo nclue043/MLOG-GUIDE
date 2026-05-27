@@ -25,7 +25,8 @@ As you read through, I encourage you to follow along if you can. Practice makes 
 ## MLog
 
 ### Execution
-MLog is typically run from top to bottom (see [Conditionals](#conditionals)) at some amount of instructions per second and loops back to the top when it reaches the bottom, continuing to loop indefinitely. You can also prematurely loop back to the top using `End`. Though seldom used, there's also `Stop` which permanently halts execution of the processor.
+MLog is, put simply, a list of instructions for the processor to run.
+It's typically run from top to bottom (see [Conditionals](#conditionals)), at some amount of instructions per second depending on the processor type, and loops back to the top when it reaches the bottom, continuing to loop indefinitely. You can also prematurely loop back to the top using `End`. Though seldom used, there's also `Stop` which permanently halts execution of the processor.
 
 ### Variables
 Variables are one of the most important things in programming, and it's where we'll begin. A variable is just something that holds a value, say a number or a piece of text. Variables in mlog are quite simple. You can set them with `Set: {A} = (B)`, where A is the variable's name and B is the value it will be set to, and other instructions that have an output. You can do simple math with them using `Operation: {result} = (a) [+] (b)` and you can use them in place of any normal value.
@@ -48,10 +49,10 @@ Variables can hold one of many different data types. Here they are for reference
 | unit     | an object reference to a unit             | `@unit`           |
 | content  | represents a type of something            | `@copper`         |
 
-MLog also provides many built-in variables, which start with the symbol @, like the aforementioned `@unit`, and they can be found in the built-in variables tab in a processor. Most are read-only, and can represent many things such as: an aforementioned Content type, like `@copper`, a mathematical constant like `@pi`, properties of the processor itself, like `@thisx` and more. 
+MLog also provides many built-in variables, which start with the symbol @, like the aforementioned `@unit`, and they can be found in the built-in variables tab in a processor. Most are read-only, and can represent many things such as: a mathematical constant like `@pi`, properties of the processor itself, like `@thisx` and more. Though `@copper` and friends look like built-ins too, they aren't and are more akin to literals like `null` (worth noting, `true` and `false` are actually just variables equal to 1 and 0 respectively)
 
 ### Conditionals
-Of course, simple math isn't all you can do. Think of any task you do in real life, and inevitably there will be a choice you make, or a thing you need to repeat, not a linear path. MLog lets you do this with essentially its sole control flow operation, `Jump`. It has many modes, but defaults to `Jump: (result) [not] (false)`, where not means "not equal to". If the whole condition evaluates to true, it jumps to the specified part of code (here I represent it as `Jump -> address:`), and if it's false then it just continues on normally. This is the only control flow you'll get, no if statements, no loops. Jumps are very common, so the built-in editor automatically shifts line numbers when new lines are inserted.
+Of course, simple math isn't all you can do. Think of any task you do in real life, and inevitably there will be a choice you make, or a thing you need to repeat, not a linear path. MLog lets you do this with what is essentially its sole control flow operation, `Jump`. It has many modes, but defaults to `Jump: (result) [not] (false)`, where not means "not equal to". If the whole condition evaluates to true, it jumps to the specified part of code (here I represent it as `Jump -> address:`), and if it's false then it just continues on normally. This is the only control flow you'll get, no if statements, no loops. Jumps are very common, so the built-in editor automatically shifts line numbers when new lines are inserted.
 
 ```
 0 Set: {number} = (15)
@@ -77,7 +78,7 @@ It's no use just having that variable though, first you must use one of the inst
 ```
 
 ### Control
-Finally, we will get to start actually affecting the world. `Control` lets you, well, control a building. The most important things you can do with it are enabling/disabling buildings (`Control: set [enabled] of (building) to (0)`) and making buildings, specifically turrets, target a position or unit. By now, you've learned enough to make useful scripts! Try writing a script that disables a thorium reactor when it doesn't have cryofluid, a common and practical piece of logic many have saved in their schematic lists. The solution will be [here](#solutions).
+Finally, we will get to start actually affecting the world. `Control` lets you, well, control a building. The most important things you can do with it are enabling/disabling buildings (`Control: set [enabled] of (block1) to (0)`) and making buildings, specifically turrets, target a position or unit (`Control: set [shoot] of (block1) x (0) y (0) shoot (0)`). By now, you've learned enough to make useful scripts! Try writing a script that disables a thorium reactor when it doesn't have cryofluid, a common and practical piece of logic many have saved in their schematic lists. The solution will be [here](#solutions).
 
 ### Binding Units
 While controlling buildings is a good start, most logic uses units as well. Binding units often confuses beginners, but it's pretty simple. Calling `Unit Bind: type (utype)` binds the next unit of the given type, in order of unit creation (oldest to youngest), and stores it in `@unit`.
@@ -87,7 +88,7 @@ This means it can still be ordered by players, as it hasn't been controlled yet.
 Try creating a script that makes every flare move 5 tiles the processor's left (`@thisx` and `@thisy`). [Solutions](#solutions).
 
 ### Flagging units
-Sometimes you want to bind every unit of a given type, but often you just want to bind a few, if not only one. MLog provides a simple system for "claiming" units and stopping other processors from using them. Units can store a single number, called its flag, defaulting to 0. When binding a unit, you check its flag first and bind again if the flag isn't 0. After finding a free unit, you can then flag it with `Unit Control: [flag] value (thisf)` where `thisf` is a unique number. Common practice is to tie it to the processor's position, as such:
+Sometimes you want to bind every unit of a given type, but often you just want to bind a few, if not only one. MLog provides a simple system for "claiming" units and stopping other processors from using them. Units can store a single number, called its flag, defaulting to 0. Though this does nothing to actually stop others from taking your unit, it's logic etiquette to do so. When binding a unit, you check its flag first and bind again if the flag isn't 0. After finding a free unit, you can then flag it with `Unit Control: [flag] value (thisf)` where `thisf` is a unique number. Common practice is to tie it to the processor's position, as such:
 
 ```
 0 Operation: {temp} = (@thisy) [*] (@mapw)
@@ -107,7 +108,7 @@ There can be many different ways of writing the same code, so don't be discourag
 3 End                                           │
 4 Control: set [enabled] of (reactor1) to (0) <-┘
 ```
-Take note of that `End` there. Remember, top to bottom execution. After a jump, that's still true!
+Take note of that `End` there. Remember, top to bottom execution. After a jump, that's still true and it would continue on otherwise! You can actually just use the cryofluid value as the input into `enabled` but that's not the point here. If you got that solution, then extra points!
 
 #### Flare control:
 ```
@@ -123,14 +124,21 @@ Remember, units are bound in a cycle, and execution loops after reaching the end
 1 Operation: {thisf} = (@thisx) [+] (temp)
 2 Wait: (0.05) seconds <-──────────────────────┐
 3 Unit Bind: type (@flare)                     │
-4 Sensor: {unitf} = (@flag) in (@unit)         │
-5 Jump -> 2: (unitf) [not] (0) ────────────────┘
-6 Unit Control: [flag] value (thisf)
-7 Unit Control: [move] x (@thisx) y (@thisy) <-┐
-8 Sensor: {dead} = (@dead) in (@unit)          │
-9 Jump -> 7: (dead) [not] (true) ──────────────┘
+4 Jump -> 2: (@unit) [==] (null) ──────────────┤
+5 Sensor: {unitf} = (@flag) in (@unit)         │
+6 Jump -> 2: (unitf) [not] (0) ────────────────┘
+7 Unit Control: [flag] value (thisf)
+8 Unit Control: [move] x (@thisx) y (@thisy) <-┐
+9 Sensor: {dead} = (@dead) in (@unit)          │
+10 Jump -> 8: (dead) [not] (true) ─────────────┘
 ```
-Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-5 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 6 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for this is `i/ips` where `i` is the number of instructions and `ips` is the instructions per second of your processor. This burst is maxed out at `5*ipt` insructions, where ipt is `ips/60`.
+Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-6 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 7 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for the wait time is `i/ips` where `i` is the number of instructions (including the `wait` itself) and `ips` is the instructions per second of your processor. This burst is maxed out at `5*ipt` insructions, where ipt is `ips/60`.
+
+| Processor | IPS  |
+| --------- | ---- |
+| micro     | 120  |
+| logic     | 480  |
+| hyper     | 1500 |
 
 ## Other
 And... that's it! This is just the start, there's so much more you can do. Go out there and use your hopefully newfound knowledge! Reading through a guide can only get you so far after all.
