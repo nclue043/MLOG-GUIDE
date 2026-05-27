@@ -25,8 +25,7 @@ As you read through, I encourage you to follow along if you can. Practice makes 
 ## MLog
 
 ### Execution
-MLog is, put simply, a list of instructions for the processor to run.
-It's typically run from top to bottom (see [Conditionals](#conditionals)), at some amount of instructions per second depending on the processor type, and loops back to the top when it reaches the bottom, continuing to loop indefinitely. You can also prematurely loop back to the top using `End`. Though seldom used, there's also `Stop` which permanently halts execution of the processor.
+MLog is, put simply, a list of instructions for the processor to run. It's typically run from top to bottom (see [Conditionals](#conditionals)), at some amount of instructions per second depending on the processor type, and loops back to the top when it reaches the bottom, continuing to loop indefinitely. You can also prematurely loop back to the top using `End`. Though seldom used, there's also `Stop` which permanently halts execution of the processor.
 
 ### Variables
 Variables are one of the most important things in programming, and it's where we'll begin. A variable is just something that holds a value, say a number or a piece of text. Variables in mlog are quite simple. You can set them with `Set: {A} = (B)`, where A is the variable's name and B is the value it will be set to, and other instructions that have an output. You can do simple math with them using `Operation: {result} = (a) [+] (b)` and you can use them in place of any normal value.
