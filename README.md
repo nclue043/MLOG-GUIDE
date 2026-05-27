@@ -134,11 +134,11 @@ Remember, units are bound in a cycle, and execution loops after reaching the end
 ```
 Be careful here, most of the time it's irrelevant, but code like this often has race conditions, specifically TOC/TOU. Basically, if lines 3-6 run, the processor finishes for this tick, and another processor takes that same unit, then the next tick, our processor will just continue with line 7 anyways. This is what that wait is for; The details aren't important but it accumulates enough instruction burst to guarantee that lines 3-6 will run in the same tick. The equation for the wait time is `i/ips` where `i` is the number of instructions (including the `wait` itself) and `ips` is the instructions per second of your processor. This burst is maxed out at `5*ipt` insructions, where ipt is `ips/60`.
 
-| Processor | IPS  |
-| --------- | ---- |
-| micro     | 120  |
-| logic     | 480  |
-| hyper     | 1500 |
+| Processor | IPS  | IPT | Max burst |
+| --------- | ---- | --- | --------- |
+| micro     | 120  | 2   | 10        |
+| logic     | 480  | 8   | 40        |
+| hyper     | 1500 | 25  | 125       |
 
 ## Other
 And... that's it! This is just the start, there's so much more you can do. Go out there and use your hopefully newfound knowledge! Reading through a guide can only get you so far after all.
